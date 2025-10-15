@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音乐云 - 在线音乐平台</title>
+  <link rel="icon" href="data:,">
+  <!-- 优化CSS加载 -->
+  <link href="/tailwind.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="/tailwind.min.css" rel="stylesheet"></noscript>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+    
+    :root {
+      --primary: #8b5cf6;
+      --primary-dark: #7c3aed;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --bg-dark: #0f172a;
+      --bg-card: rgba(255, 255, 255, 0.95);
+      --bg-glass: rgba(255, 255, 255, 0.1);
+      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    
+    /* 导航栏 - 现代毛玻璃效果 */
+    .header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow-md);
+    }
+    
+    /* 主容器 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 玻璃态卡片 */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* 播放器控制栏 */
+    .player-controls {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(6, 182, 212, 0.9) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* 歌曲卡片 */
+    .song-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .song-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+    
+    .song-card:hover::before {
+      left: 100%;
+    }
+    
+    .song-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+    
+    /* 按钮样式 */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6);
+    }
+    
+    /* 图标按钮 */
+    .btn-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    /* 播放控制按钮 */
+    .play-btn-large {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+      transition: all 0.3s ease;
+    }
+    
+    .play-btn-large:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px rgba(139, 92, 246, 0.7);
+    }
+    
+    /* 进度条 */
+    .progress-bar {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+      overflow: hidden;
+    }
+    
+    .progress-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+    
+    .progress-bar::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+    
+    /* 上传区域 */
+    .upload-area {
+      border: 2px dashed rgba(139, 92, 246, 0.5);
+      background: rgba(139, 92, 246, 0.05);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    /* 工具提示 */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      margin-bottom: 8px;
+      backdrop-filter: blur(10px);
+    }
+    
+    /* 动画效果 */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    /* 加载动画 */
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid var(--primary);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+      
+      .song-card {
+        padding: 16px;
+      }
+      
+      .btn-icon {
+        width: 44px;
+        height: 44px;
+      }
+      
+      .play-btn-large {
+        width: 56px;
+        height: 56px;
+        font-size: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .glass-card {
+        border-radius: 16px;
+      }
+    }
+    
+    /* 音量滑块样式 */
+    .volume-slider {
+      background: linear-gradient(to right, var(--primary) 0%, var(--primary) 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 100%);
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- 导航栏 - 现代毛玻璃设计 -->
+  <nav class="header">
+    <div class="container">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-lg">
+            <i class="fas fa-music text-white text-xl float-animation"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">音乐云</h1>
+            <p class="text-white/80 text-sm">让音乐触手可及</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="text-white/90 text-sm bg-white/10 px-4 py-2 rounded-full backdrop-blur-md">
+            <i class="far fa-clock mr-2"></i>
+            <span id="currentTimeDisplay">--:--</span>
+          </div>
+          <button class="tooltip btn-icon" data-tooltip="设置">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主内容区域 -->
+  <div class="container py-8">
+    <!-- 播放器控制栏 -->
+    <div id="player" class="player-controls p-6 mb-8 hidden">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex-1 min-w-0">
+          <h3 id="nowPlayingTitle" class="text-xl font-semibold text-white truncate">选择歌曲开始播放</h3>
+          <p id="nowPlayingArtist" class="text-white/80 text-sm">--</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button id="prevBtn" class="tooltip btn-icon" data-tooltip="上一首">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button id="playBtn" class="tooltip play-btn-large" data-tooltip="播放">
+            <i class="fas fa-play"></i>
+          </button>
+          <button id="pauseBtn" class="tooltip play-btn-large hidden" data-tooltip="暂停">
+            <i class="fas fa-pause"></i>
+          </button>
+          <button id="nextBtn" class="tooltip btn-icon" data-tooltip="下一首">
+            <i class="fas fa-step-forward"></i>
+          </button>
+          <button id="volumeBtn" class="tooltip btn-icon" data-tooltip="音量">
+            <i class="fas fa-volume-up"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <span id="currentTime" class="text-white/80 text-sm w-12">0:00</span>
+        <input type="range" id="progressBar" class="progress-bar flex-1" min="0" max="100" value="0">
+        <span id="duration" class="text-white/80 text-sm w-12">0:00</span>
+      </div>
+      
+      <audio id="audioPlayer" class="w-full"></audio>
+    </div>
+
+    <!-- 上传区域 -->
+    <div class="glass-card p-8 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 flex items-center">
+          <i class="fas fa-cloud-upload-alt text-purple-600 mr-3 text-2xl"></i>
+          上传音乐
+        </h2>
+        <div class="text-sm text-white bg-purple-500/20 px-4 py-2 rounded-full backdrop-blur-md">
+          <i class="fas fa-info-circle mr-2"></i>
+          支持 MP3, WAV, OGG
+        </div>
+      </div>
+      
+      <form id="uploadForm" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-3 flex items-center">
+              <i class="fas fa-music text-purple-500 mr-2"></i>
+              歌曲名称
+            </label>
+            <input type="text" name="title" placeholder="请输入歌曲名称" 
+                   class="w-full px-4 py-4 bg-white/50 border border-gray-300/50 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition backdrop-blur-sm">
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-3 flex items-center">
+              <i class="fas fa-user text-purple-500 mr-2"></i>
+              歌手
+            </label>
+            <input type="text" name="artist" placeholder="请输入歌手姓名" 
+                   class="w-full px-4 py-4 bg-white/50 border border-gray-300/50 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition backdrop-blur-sm">
+          </div>
+        </div>
+        
+        <div class="upload-area p-12 text-center cursor-pointer">
+          <input type="file" name="song" accept="audio/*" class="hidden" id="fileInput">
+          <div id="uploadContent" class="space-y-4">
+            <div class="w-20 h-20 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm">
+              <i class="fas fa-cloud-upload-alt text-purple-600 text-3xl"></i>
+            </div>
+            <p class="text-gray-800 font-semibold text-lg">拖放文件到此处或点击选择</p>
+            <p class="text-gray-600 text-sm">最大文件大小: 10MB</p>
+          </div>
+          <div id="fileName" class="hidden mt-6">
+            <div class="bg-green-500/20 border border-green-500/30 rounded-xl p-4 inline-flex items-center backdrop-blur-sm">
+              <i class="fas fa-check-circle text-green-600 mr-3 text-xl"></i>
+              <span class="text-green-700 font-medium text-lg"></span>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" 
+                class="w-full btn-primary py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center space-x-3">
+          <i class="fas fa-upload text-xl"></i>
+          <span>上传音乐</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- 音乐列表 -->
+    <div class="glass-card p-8 relative">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 flex items-center">
+          <i class="fas fa-music text-purple-600 mr-3 text-2xl"></i>
+          音乐库
+        </h2>
+        <div class="text-sm text-white bg-purple-500/20 px-4 py-2 rounded-full backdrop-blur-md">
+          <i class="fas fa-headphones mr-2"></i>
+          <span id="songCount">0</span> 首歌曲
+        </div>
+      </div>
+      
+      <div class="flex items-center mb-6">
+        <div class="relative flex-1 max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <i class="fas fa-search text-gray-400 text-lg"></i>
+          </div>
+          <input type="text" id="searchInput" placeholder="搜索歌曲或歌手..." 
+                 class="w-full pl-12 pr-4 py-3 bg-white/50 border border-gray-300/50 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition backdrop-blur-sm">
+        </div>
+      </div>
+      
+      <div id="loading" class="absolute inset-0 bg-white/80 backdrop-blur-lg flex items-center justify-center rounded-xl hidden z-10">
+        <div class="text-center">
+          <div class="loading-spinner mx-auto mb-4"></div>
+          <p class="text-gray-700 font-medium text-lg">加载中...</p>
+        </div>
+      </div>
+      
+      <ul id="songList" class="space-y-4">
+        <!-- 歌曲列表将通过JavaScript动态添加 -->
+      </ul>
+      
+      <div id="emptyState" class="text-center py-16 hidden">
+        <div class="w-24 h-24 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+          <i class="fas fa-music text-purple-600 text-3xl"></i>
+        </div>
+        <h3 class="text-gray-800 text-xl font-semibold mb-2">暂无歌曲</h3>
+        <p class="text-gray-600">点击上方"上传音乐"按钮添加您的第一首歌曲</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="mt-12 py-6 text-center">
+    <p class="text-blue-200 text-sm">© 2025 音乐云 - 让音乐触手可及</p>
+    <p class="text-blue-300 text-xs mt-1">powered by Music Platform</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

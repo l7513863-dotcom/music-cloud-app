@@ -1,0 +1,27 @@
+{
+  "name": "music-cloud-platform-cloud",
+  "version": "1.0.0",
+  "description": "音乐云平台 - 云部署专用版（新手友好）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "deploy": "echo '准备部署到Vercel...'"
+  },
+  "keywords": [
+    "music",
+    "cloud",
+    "deployment",
+    "beginner",
+    "vercel"
+  ],
+  "author": "编程小白学习项目",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

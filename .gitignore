@@ -1,0 +1,49 @@
+# 依赖包
+node_modules/
+
+# 环境变量
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 日志文件
+*.log
+logs/
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 覆盖文件
+*.tgz
+*.tar.gz
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+tmp/
+temp/
+
+# 上传文件（在云部署中不需要）
+uploads/
+test_uploads/
+
+# 数据库文件（云部署使用外部数据库）
+music.db
+*.db
+
+# 构建产物
+dist/
+build/

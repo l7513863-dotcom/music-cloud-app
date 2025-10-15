@@ -1,0 +1,43 @@
+{
+  "name": "music-cloud-platform",
+  "version": "1.0.0",
+  "description": "为编程小白设计的现代化音乐播放平台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "setup": "npm install",
+    "init-db": "node -e \"const sqlite3 = require('sqlite3').verbose(); const db = new sqlite3.Database('./music.db'); db.serialize(() => { db.run('CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, artist TEXT, file_path TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)'); db.run('CREATE INDEX IF NOT EXISTS idx_songs_artist ON songs(artist)'); }); db.close(); console.log('✅ 数据库初始化完成');\"",
+    "test": "echo \"运行测试文件...\" && if exist test_uploads\\test_song.mp3 (echo ✅ 测试文件存在) else (echo ⚠️ 测试文件不存在，请手动添加)",
+    "clean": "if exist uploads rmdir /s /q uploads && mkdir uploads && echo ✅ 清理上传目录完成",
+    "backup": "if exist music.db (copy music.db music_backup.db && echo ✅ 数据库备份完成) else (echo ⚠️ 数据库文件不存在)",
+    "help": "echo 可用命令: && echo   npm start    - 启动服务器 && echo   npm run dev  - 开发模式启动 && echo   npm run setup - 安装依赖 && echo   npm run init-db - 初始化数据库 && echo   npm run test - 运行测试 && echo   npm run clean - 清理上传文件 && echo   npm run backup - 备份数据库"
+  },
+  "keywords": [
+    "music",
+    "player",
+    "web",
+    "express",
+    "sqlite",
+    "beginner-friendly"
+  ],
+  "author": "编程小白学习项目",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.4",
+    "sqlite3": "^5.1.6",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/music-cloud-platform"
+  },
+  "bugs": {
+    "url": "https://github.com/example/music-cloud-platform/issues"
+  },
+  "homepage": "https://github.com/example/music-cloud-platform#readme"
+}
