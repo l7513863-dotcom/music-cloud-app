@@ -29,9 +29,7 @@
     "sqlite3": "^5.1.6",
     "cors": "^2.8.5"
   },
-  "engines": {
-    "node": ">=14.0.0"
-  },
+
   "repository": {
     "type": "git",
     "url": "https://github.com/l7513863-dotcom/music-cloud-app"
